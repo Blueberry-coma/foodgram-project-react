@@ -23,19 +23,16 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag)
     name = models.CharField(max_length=200)
     cooking_time = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)]
-        )
+        validators=[MinValueValidator(1)])
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL,
-                               related_name='recipes',
-                               )
+                               related_name='recipes')
     image = models.ImageField(upload_to='static/recipe/')
     tags = models.ManyToManyField(Tag, related_name='recipes',)
     ingredients = models.ManyToManyField(
         'Ingredient',
         related_name='recipes',
         through='IngredientInRecipe',
-        through_fields=('recipe', 'ingredient')
-        )
+        through_fields=('recipe', 'ingredient'))
 
     class Meta:
         verbose_name = 'Рецепт'
