@@ -87,7 +87,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ('id', 'name', 'color', 'slug')
 
 
 class RecipeReadSerializer(ModelSerializer):
@@ -155,8 +155,7 @@ class IngredientSerializer(ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(ModelSerializer):
-    id = IntegerField(
-        write_only=True, source='ingredient.id')
+    id = PrimaryKeyRelatedField(read_only=True, source='ingredient.id')
     name = serializers.CharField(
         source='ingredient.name')
     measurement_unit = serializers.CharField(
@@ -193,31 +192,11 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError({
                 'ingredients': 'Нужен хотя бы один ингредиент!'
             })
-        ingredients_list = []
-        for item in ingredients:
-            ingredient = get_object_or_404(Ingredient, id=item['id'])
-            if ingredient in ingredients_list:
-                raise ValidationError({
-                    'ingredients': 'Ингридиенты не могут повторяться!'
-                })
-            if int(item['amount']) <= 0:
-                raise ValidationError({
-                    'amount': 'Количество ингредиента должно быть больше 0!'
-                })
-            ingredients_list.append(ingredient)
-        return value
 
     def validate_tags(self, value):
         tags = value
         if not tags:
             raise ValidationError({'tags': 'Нужно выбрать хотя бы один тег!'})
-        tags_list = []
-        for tag in tags:
-            if tag in tags_list:
-                raise ValidationError(
-                    {'tags': 'Теги должны быть уникальными!'})
-            tags_list.append(tag)
-        return value
 
     @transaction.atomic
     def create_ingredients_amounts(self, ingredients, recipe):
