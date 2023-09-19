@@ -150,7 +150,11 @@ class RecipeShortSerializer(ModelSerializer):
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields = (
+            'id',
+            'name',
+            'measurement_unit'
+        )
 
 
 class IngredientInRecipeWriteSerializer(ModelSerializer):
