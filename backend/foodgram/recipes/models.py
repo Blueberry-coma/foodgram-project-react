@@ -8,9 +8,9 @@ User = get_user_model()
 
 def validate_color(value):
     RegexValidator(
-                regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
-                message='"Это не цвет HEX!'
-                )
+        regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+        message='"Это не цвет HEX!'
+        )
 
 
 class Tag(models.Model):
