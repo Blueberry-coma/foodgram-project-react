@@ -1,25 +1,16 @@
-import re
-
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.forms import ValidationError
 
 User = get_user_model()
 
 
 def validate_color(value):
-    if (
-        Tag.objects.filter(color=value.upper()).exists()
-        or Tag.objects.filter(color=value.lower()).exists()
-    ):
-        raise ValidationError('Цвет занят другим тегом')
-    reg = re.compile(r'^#([a-f0-9]{6}|[A-F0-9]{6})$')
-    if not reg.match(value):
-        raise ValidationError(
-            'Введите 6-значный код hex-color в одном регистре'
-        )
+    RegexValidator(
+                regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+                message='"Это не цвет HEX!'
+            )
 
 
 class Tag(models.Model):
